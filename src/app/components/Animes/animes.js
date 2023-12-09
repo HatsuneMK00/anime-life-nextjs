@@ -1,27 +1,36 @@
-import {useGlobalContext} from "@/app/context/globalProvider";
+import {useGlobalContext, useGlobalUpdateContext} from "@/app/context/globalProvider";
 import styled from "styled-components";
 import {add, plus} from "@/app/utils/icons";
 import AnimeItem from "@/app/components/AnimeItem/animeItem";
+import Modal from "@/app/components/Modals/modal";
+import CreateAnime from "@/app/components/Modals/createAnime";
+import EditAnime from "@/app/components/Modals/editAnime";
+import {useState} from "react";
 
 function Animes({ title, animes }) {
-  const { theme } = useGlobalContext();
+  const { theme, createModal, editModal } = useGlobalContext();
+  const { openCreateModal } = useGlobalUpdateContext();
+  const [editModalInitialData, setEditModalInitialData] = useState({})
 
   return (
     <AnimeStyled theme={theme}>
+      { createModal && <Modal content={<CreateAnime />} /> }
+      { editModal && <Modal content={<EditAnime initialData={...editModalInitialData}/>} /> }
       <h1>{title}</h1>
 
-      <button className="btn-rounded">{plus}</button>
+      <button className="btn-rounded" onClick={openCreateModal}>{plus}</button>
 
       <div className="animes grid">
         {animes.map((anime) => (
           <AnimeItem
             key={anime.id}
             name={anime.name}
-            name_jp={anime.name_jp}
+            nameJp={anime.name_jp}
             id={anime.id}
             date={anime.date}
             rating={anime.rating}
-            watch_count={anime.watch_count}/>
+            watchCount={anime.watch_count}
+            setEditModalInitialData={setEditModalInitialData}/>
         ))}
         {/*<button className="create-anime">*/}
         {/*  {add}*/}

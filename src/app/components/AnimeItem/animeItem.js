@@ -1,23 +1,25 @@
 'use client'
 import React from 'react';
-import {useGlobalContext} from "@/app/context/globalProvider";
+import {useGlobalContext, useGlobalUpdateContext} from "@/app/context/globalProvider";
 import styled from "styled-components";
 import {edit, emptyStar, star, trash} from "@/app/utils/icons";
 import RatingRow from "@/app/components/RatingRow/ratingRow";
 import Image from "next/image";
 
-function AnimeItem({ name, name_jp, date, rating, watch_count, id }) {
+function AnimeItem({ name, nameJp, date, rating, watchCount, id, setEditModalInitialData }) {
   const { theme } = useGlobalContext()
+  const { openEditModal } = useGlobalUpdateContext()
+
   return (
     <AnimeItemStyled theme={theme}>
       <div className="anime-main">
         <div className="anime-info">
           <h1>{name}</h1>
-          <h2>{name_jp}</h2>
+          <h2>{nameJp}</h2>
           <p className="date">{date}</p>
-          { watch_count >= 2 && (
+          { watchCount >= 2 && (
             <div className="watch-count">
-              {watch_count} 刷
+              {watchCount} 刷
             </div>
           )}
         </div>
@@ -27,7 +29,17 @@ function AnimeItem({ name, name_jp, date, rating, watch_count, id }) {
       </div>
       <div className="anime-footer">
         <RatingRow rating={rating} />
-        <button className="edit">{edit}</button>
+        <button className="edit" onClick={() => {
+          setEditModalInitialData({
+            name: name,
+            nameJp: nameJp,
+            date: date,
+            rating: rating,
+            watchCount: watchCount,
+            bangumiId: id
+          })
+          openEditModal()
+        }}>{edit}</button>
         <button
           className="delete"
           onClick={() => {

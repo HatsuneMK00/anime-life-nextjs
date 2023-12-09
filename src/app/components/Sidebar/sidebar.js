@@ -39,9 +39,10 @@ function Sidebar() {
         <div className="user-btn absolute z-20 top-0 w-full h-full">
           <UserButton afterSignOutUrl="/sign-in"/>
         </div>
-        <h1 className="capitalize">
-          {firstName} {lastName}
-        </h1>
+        <div className="flex flex-col ms-2">
+          <h1 className="capitalize">{firstName}</h1>
+          <h1 className="capitalize">{lastName}</h1>
+        </div>
       </div>
       <ul className="nav-items">
         {menu.map((item) => {
@@ -178,7 +179,13 @@ const SidebarStyled = styled.nav`
         }
         
         .capitalize {
+            width: 8rem;
             line-height: 2rem;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1;
+            text-overflow: ellipsis;
         }
 
         .image,
