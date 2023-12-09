@@ -1,10 +1,12 @@
 'use client';
 import React from 'react'
 import styled from "styled-components";
+import {Toaster} from "react-hot-toast";
 
 function GlobalStyleProvider({children}) {
   return (
     <GlobalStyled>
+      <Toaster />
       {children}
     </GlobalStyled>
   )
