@@ -6,6 +6,7 @@ import Button from "@/app/components/Button/button";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 import {add} from "@/app/utils/icons";
+import RatingRow from "@/app/components/RatingRow/ratingRow";
 
 function CreateAnime() {
   const [name, setName] = useState("");
@@ -89,13 +90,7 @@ function CreateAnime() {
       </div>
       <div className="input-control">
         <label htmlFor="rating">评价</label>
-        <input
-          value={rating}
-          onChange={handleChange("rating")}
-          type="text"
-          name="rating"
-          id="rating"
-        />
+        <RatingRow editable={true} rating={rating} setRating={setRating} />
       </div>
 
       <div className="submit-btn flex justify-end">

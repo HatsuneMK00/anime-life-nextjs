@@ -30,3 +30,4 @@ export const exclamation = <i className="fa-solid fa-exclamation"></i>;
 export const star = <i className="fa-solid fa-star"></i>;
 export const all = <i className="fa-solid fa-border-all"></i>;
 export const emptyStar = <i className="fa-regular fa-star"></i>;
+export const eraser = <i className="fa-solid fa-eraser"></i>;

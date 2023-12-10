@@ -17,11 +17,6 @@ function AnimeItem({ name, nameJp, date, rating, watchCount, id, setEditModalIni
           <h1>{name}</h1>
           <h2>{nameJp}</h2>
           <p className="date">{date}</p>
-          { watchCount >= 2 && (
-            <div className="watch-count">
-              {watchCount} 刷
-            </div>
-          )}
         </div>
         <div className="image">
           <Image width={150} height={275} src="/Kyokai no Kanata.jpg" alt="cover"/>
@@ -29,6 +24,11 @@ function AnimeItem({ name, nameJp, date, rating, watchCount, id, setEditModalIni
       </div>
       <div className="anime-footer">
         <RatingRow rating={rating} />
+        { watchCount >= 2 && (
+          <div className="watch-count">
+            {watchCount} 刷
+          </div>
+        )}
         <button className="edit" onClick={() => {
           setEditModalInitialData({
             name: name,
@@ -73,9 +73,10 @@ const AnimeItemStyled = styled.div`
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
+            width: 50%;
             
             > h1 {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
                 font-weight: 500;
                 overflow: hidden;
                 display: -webkit-box;
@@ -85,7 +86,7 @@ const AnimeItemStyled = styled.div`
             }
 
             > h2 {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
                 font-weight: 400;
                 color: ${(props) => props.theme.colorGrey3};
                 overflow: hidden;
@@ -97,23 +98,13 @@ const AnimeItemStyled = styled.div`
         }
         
         .image {
-            width: 150px;
+            width: 50%;
             object-fit: cover;
-            margin-left: auto;
             
             img {
                 border-radius: 12px;
+                margin-left: auto;
             }
-        }
-
-        .watch-count {
-            display: inline-block;
-            padding: 0.4rem 1rem;
-            background: ${(props) => props.theme.colorGreenDark};
-            border-radius: 30px;
-            margin-top: auto;
-            width: 60%;
-            text-align: center;
         }
     }
 
@@ -122,6 +113,16 @@ const AnimeItemStyled = styled.div`
         display: flex;
         align-items: center;
         gap: 1.2rem;
+
+        .watch-count {
+            display: inline-block;
+            padding: 0.4rem 0.2rem;
+            background: ${(props) => props.theme.colorGreenDark};
+            border-radius: 20px;
+            margin-top: auto;
+            width: 20%;
+            text-align: center;
+        }
 
         button {
             border: none;

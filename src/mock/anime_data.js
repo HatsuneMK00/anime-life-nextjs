@@ -1,5 +1,13 @@
 export const mock_animes = [
   {
+    id: 6,
+    name: "境界的彼方 未来篇",
+    name_jp: "境界的彼方 未来篇",
+    rating: 2,
+    date: "2023-12-1",
+    watch_count: 2,
+  },
+  {
     id: 1,
     name: "境界的彼方",
     name_jp: "境界的彼方",
