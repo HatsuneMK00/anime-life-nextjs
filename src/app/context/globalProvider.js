@@ -1,15 +1,45 @@
 'use client';
-import React, {createContext, useContext, useState} from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 import themes from "@/app/context/themes";
+import {useUser} from "@clerk/nextjs";
+import useFetch from "@/app/hooks/useFetch";
+import {BASE_URL} from "@/app/context/network";
 
 export const GlobalContext = createContext();
 export const GlobalUpdateContext = createContext();
 
 export const GlobalProvider = ({children}) => {
+  const {user} = useUser();
+  const fetch = useFetch();
+
   const [selectedTheme, setSelectedTheme] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const [createModal, setCreateModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
+
+  const [animes, setAnimes] = useState([]);
+
   const theme = themes[selectedTheme];
+
+  const allAnimes = () => {
+    setIsLoading(true)
+    fetch(`${BASE_URL}/api/anime_record`)
+      .then(data => {
+        data = data.data;
+        setAnimes(data)
+        setIsLoading(false)
+      })
+      .catch(err => {
+        console.log(err);
+        setIsLoading(false)
+      })
+  };
+
+  useEffect(() => {
+    if (user) {
+      allAnimes();
+    }
+  }, [user]);
 
   const openCreateModal = () => {
     setCreateModal(true);
@@ -31,8 +61,10 @@ export const GlobalProvider = ({children}) => {
   return (
     <GlobalContext.Provider value={{
       theme,
+      animes,
       createModal,
-      editModal
+      editModal,
+      isLoading
     }}>
       <GlobalUpdateContext.Provider value={{
         openCreateModal,

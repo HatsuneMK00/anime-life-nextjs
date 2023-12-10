@@ -6,28 +6,35 @@ import Modal from "@/app/components/Modals/modal";
 import CreateAnime from "@/app/components/Modals/createAnime";
 import EditAnime from "@/app/components/Modals/editAnime";
 import {useState} from "react";
+import formatDate from "@/app/utils/formatDate";
 
 function Animes({ title, animes }) {
-  const { theme, createModal, editModal } = useGlobalContext();
+  const { theme, isLoading, createModal, editModal } = useGlobalContext();
   const { openCreateModal } = useGlobalUpdateContext();
   const [editModalInitialData, setEditModalInitialData] = useState({})
 
   return (
     <AnimeStyled theme={theme}>
-      { createModal && <Modal content={<CreateAnime />} /> }
-      { editModal && <Modal content={<EditAnime initialData={...editModalInitialData}/>} /> }
+      {createModal && <Modal content={<CreateAnime/>}/>}
+      {editModal && <Modal content={<EditAnime initialData={...editModalInitialData}/>}/>}
       <h1>{title}</h1>
 
       <button className="btn-rounded" onClick={openCreateModal}>{plus}</button>
 
+      {isLoading &&
+        <div className="w-full h-full flex items-center justify-center">
+          <span className="loader"></span>
+        </div>
+      }
       <div className="animes grid">
         {animes.map((anime) => (
           <AnimeItem
             key={anime.id}
             name={anime.name}
             nameJp={anime.name_jp}
-            id={anime.id}
-            date={anime.date}
+            cover={anime.cover}
+            id={anime.bangumi_id}
+            date={formatDate(anime.record_at)}
             rating={anime.rating}
             watchCount={anime.watch_count}
             setEditModalInitialData={setEditModalInitialData}/>

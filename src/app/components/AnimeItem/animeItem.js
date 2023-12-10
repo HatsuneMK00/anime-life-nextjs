@@ -6,7 +6,26 @@ import {edit, emptyStar, star, trash} from "@/app/utils/icons";
 import RatingRow from "@/app/components/RatingRow/ratingRow";
 import Image from "next/image";
 
-function AnimeItem({ name, nameJp, date, rating, watchCount, id, setEditModalInitialData }) {
+const shimmer = (w, h) => `
+<svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs>
+    <linearGradient id="g">
+      <stop stop-color="#333" offset="20%" />
+      <stop stop-color="#222" offset="50%" />
+      <stop stop-color="#333" offset="70%" />
+    </linearGradient>
+  </defs>
+  <rect width="${w}" height="${h}" fill="#333" />
+  <rect id="r" width="${w}" height="${h}" fill="url(#g)" />
+  <animate xlink:href="#r" attributeName="x" from="-${w}" to="${w}" dur="1s" repeatCount="indefinite"  />
+</svg>`
+
+const toBase64 = (str) =>
+  typeof window === 'undefined'
+    ? Buffer.from(str).toString('base64')
+    : window.btoa(str)
+
+function AnimeItem({ name, nameJp, cover, id, date, rating, watchCount, setEditModalInitialData }) {
   const { theme } = useGlobalContext()
   const { openEditModal } = useGlobalUpdateContext()
 
@@ -19,7 +38,12 @@ function AnimeItem({ name, nameJp, date, rating, watchCount, id, setEditModalIni
           <p className="date">{date}</p>
         </div>
         <div className="image">
-          <Image width={150} height={275} src="/Kyokai no Kanata.jpg" alt="cover"/>
+          <Image
+            width={150}
+            height={215}
+            placeholder={`data:image/svg+xml;base64,${toBase64(shimmer(700, 475))}`}
+            src={cover}
+            alt="cover"/>
         </div>
       </div>
       <div className="anime-footer">

@@ -36,7 +36,8 @@ function RatingRow({editable, rating, setRating}) {
     <RatingRowStyled theme={theme} confirmed={confirmed} editable={editable}>
       {ratingDiv.map((item, index) => (
         editable ?
-          <div key={index} onMouseOver={() => handleHover(index)} onClick={handleClick}>{item}</div> : item
+          <div key={index} onMouseOver={() => handleHover(index)} onClick={handleClick}>{item}</div>
+          : <div key={index}>{item}</div>
       ))}
       { editable && <div className="eraser" onClick={handleErase}>{eraser}</div> }
     </RatingRowStyled>
