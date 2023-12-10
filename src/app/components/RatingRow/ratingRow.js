@@ -33,7 +33,7 @@ function RatingRow({editable, rating, setRating}) {
   }
 
   return (
-    <RatingRowStyled theme={theme} confirmed={confirmed}>
+    <RatingRowStyled theme={theme} confirmed={confirmed} editable={editable}>
       {ratingDiv.map((item, index) => (
         editable ?
           <div key={index} onMouseOver={() => handleHover(index)} onClick={handleClick}>{item}</div> : item
@@ -49,13 +49,13 @@ const RatingRowStyled = styled.div`
     font-size: 1.5rem;
     color: ${(props) => props.confirmed && props.theme.colorGreenDark};
     
+    i {
+        cursor: ${(props) => props.editable && "pointer"};
+    }
+    
     .eraser {
         color: white;
         margin-left: auto;
-        
-        > i {
-            cursor: pointer;
-        }
     }
 `
 
