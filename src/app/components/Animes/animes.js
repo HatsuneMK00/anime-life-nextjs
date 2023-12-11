@@ -1,6 +1,6 @@
 import {useGlobalContext, useGlobalUpdateContext} from "@/app/context/globalProvider";
 import styled from "styled-components";
-import {add, plus} from "@/app/utils/icons";
+import {plus, search} from "@/app/utils/icons";
 import AnimeItem from "@/app/components/AnimeItem/animeItem";
 import Modal from "@/app/components/Modals/modal";
 import CreateAnime from "@/app/components/Modals/createAnime";
@@ -8,17 +8,44 @@ import EditAnime from "@/app/components/Modals/editAnime";
 import {useState} from "react";
 import formatDate from "@/app/utils/formatDate";
 
-function Animes({ title, animes }) {
-  const { theme, isLoading, createModal, editModal } = useGlobalContext();
-  const { openCreateModal } = useGlobalUpdateContext();
+function Animes({title, animes}) {
+  const {theme, isLoading, createModal, editModal} = useGlobalContext();
+  const {searchAnimes} = useGlobalUpdateContext();
+  const {openCreateModal} = useGlobalUpdateContext();
   const [editModalInitialData, setEditModalInitialData] = useState({})
+  const [searchText, setSearchText] = useState("")
+
+  const handleChange = (name) => (e) => {
+    switch (name) {
+      case "search":
+        setSearchText(e.target.value);
+        break;
+      default:
+        break;
+    }
+  }
+
+  const handleSearch = () => {
+    searchAnimes(searchText);
+  }
 
   return (
     <AnimeStyled theme={theme}>
       {createModal && <Modal content={<CreateAnime/>}/>}
       {editModal && <Modal content={<EditAnime initialData={...editModalInitialData}/>}/>}
-      <h1>{title}</h1>
-
+      <div className="animes-header">
+        <h1>{title}</h1>
+        <div className="input-control">
+          <label htmlFor="search" onClick={handleSearch}>{search}</label>
+          <input
+            type="text"
+            placeholder="想搜什么？"
+            value={searchText}
+            id="search"
+            name="search"
+            onChange={handleChange("search")}/>
+        </div>
+      </div>
       <button className="btn-rounded" onClick={openCreateModal}>{plus}</button>
 
       {isLoading &&
@@ -64,6 +91,69 @@ const AnimeStyled = styled.main`
         width: 0.5rem;
     }
 
+    .animes-header {
+        display: flex;
+        align-items: center;
+
+        .input-control {
+            width: 30rem;
+            position: relative;
+            margin: 0.8rem 1.6rem;
+            font-weight: 500;
+
+            @media screen and (max-width: 450px) {
+                margin: 1rem 0;
+            }
+
+            label {
+                cursor: pointer;
+                position: absolute;
+                bottom: 0;
+                right: 1rem;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: clamp(0.9rem, 5vw, 1.2rem);
+                
+                i {
+                    font-size: 1.5rem;
+                }
+
+                span {
+                    color: ${(props) => props.theme.colorGrey3};
+                }
+            }
+
+            input {
+                width: 100%;
+                padding: 1rem;
+
+                resize: none;
+                background-color: ${(props) => props.theme.colorGreyDark};
+                color: ${(props) => props.theme.colorGrey2};
+                border-radius: 0.5rem;
+            }
+        }
+
+        > h1 {
+            font-size: clamp(1.5rem, 2vw, 2rem);
+            font-weight: 800;
+            position: relative;
+
+            &::after {
+                content: "";
+                position: absolute;
+                bottom: -0.5rem;
+                left: 0;
+                width: 3rem;
+                height: 0.2rem;
+                background-color: ${(props) => props.theme.colorPrimaryGreen};
+                border-radius: 0.5rem;
+            }
+        }
+    }
+
     .btn-rounded {
         position: fixed;
         top: 4.9rem;
@@ -90,23 +180,6 @@ const AnimeStyled = styled.main`
 
     .animes {
         margin: 2rem 0;
-    }
-
-    > h1 {
-        font-size: clamp(1.5rem, 2vw, 2rem);
-        font-weight: 800;
-        position: relative;
-
-        &::after {
-            content: "";
-            position: absolute;
-            bottom: -0.5rem;
-            left: 0;
-            width: 3rem;
-            height: 0.2rem;
-            background-color: ${(props) => props.theme.colorPrimaryGreen};
-            border-radius: 0.5rem;
-        }
     }
 
     .create-anime {

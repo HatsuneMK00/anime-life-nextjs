@@ -21,7 +21,13 @@ export const GlobalProvider = ({children}) => {
 
   const theme = themes[selectedTheme];
 
+  const clearAnimes = () => {
+    console.log('clearAnimes called')
+    setAnimes([]);
+  }
+
   const allAnimes = () => {
+    console.log('allAnimes called');
     setIsLoading(true)
     fetch(`${BASE_URL}/api/anime_record`)
       .then(data => {
@@ -34,6 +40,20 @@ export const GlobalProvider = ({children}) => {
         setIsLoading(false)
       })
   };
+
+  const searchAnimes = (searchText) => {
+    setIsLoading(true)
+    fetch(`${BASE_URL}/api/anime_record/search?searchText=${searchText}`)
+      .then(data => {
+        data = data.data;
+        setAnimes(data)
+        setIsLoading(false)
+      })
+      .catch(err => {
+        console.log(err);
+        setIsLoading(false)
+      })
+  }
 
   useEffect(() => {
     if (user) {
@@ -71,7 +91,10 @@ export const GlobalProvider = ({children}) => {
         closeCreateModal,
         openEditModal,
         closeEditModal,
-        closeModal
+        closeModal,
+        clearAnimes,
+        allAnimes,
+        searchAnimes
       }}>
         {children}
       </GlobalUpdateContext.Provider>

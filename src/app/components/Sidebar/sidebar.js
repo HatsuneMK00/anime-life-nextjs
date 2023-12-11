@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import styled from "styled-components";
-import {useGlobalContext} from "@/app/context/globalProvider";
+import {useGlobalContext, useGlobalUpdateContext} from "@/app/context/globalProvider";
 import Image from "next/image";
 import menu from "@/app/utils/menu";
 import {usePathname, useRouter} from "next/navigation";
@@ -12,6 +12,7 @@ import Button from "@/app/components/Button/button";
 
 function Sidebar() {
   const {theme} = useGlobalContext();
+  const {clearAnimes} = useGlobalUpdateContext();
 
   const router = useRouter();
   const pathname = usePathname()
@@ -26,6 +27,9 @@ function Sidebar() {
   };
 
   const handleClick = (link) => {
+    if (link !== pathname) {
+      clearAnimes();
+    }
     router.push(link);
   };
 
