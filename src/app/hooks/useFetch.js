@@ -7,7 +7,9 @@ function useFetch() {
 
   const authenticatedFetch = async (...args) => {
     return fetch(...args, {
-      headers: {Authorization: `Bearer ${await getToken()}`}
+      headers: {
+        Authorization: `Bearer ${await getToken()}`,
+      }
     }).then(res => res.json());
   };
 

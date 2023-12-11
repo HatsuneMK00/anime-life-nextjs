@@ -7,15 +7,21 @@ import toast from "react-hot-toast";
 import styled from "styled-components";
 import {add} from "@/app/utils/icons";
 import RatingRow from "@/app/components/RatingRow/ratingRow";
+import useFetch from "@/app/hooks/useFetch";
+import {BASE_URL} from "@/app/context/network";
+import usePost from "@/app/hooks/usePost";
 
 function CreateAnime() {
   const [name, setName] = useState("");
   const [rating, setRating] = useState("");
   const [comment, setComment] = useState("")
+  const [isLoading, setIsLoading] = useState(false);
 
   // const { theme, allTasks, closeModal } = useGlobalContext();
   const { theme } = useGlobalContext();
-  const { closeModal } = useGlobalUpdateContext();
+  const { closeModal, reloadAnimes } = useGlobalUpdateContext();
+
+  const post = usePost();
 
   const handleChange = (name) => (e) => {
     switch (name) {
@@ -36,31 +42,29 @@ function CreateAnime() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    toast.success("Uploading")
-    // const task = {
-    //   title: nameJp,
-    //   description: rating,
-    //   date,
-    //   completed,
-    //   important,
-    // };
-    //
-    // try {
-    //   const res = await axios.post("/api/tasks", task);
-    //
-    //   if (res.data.error) {
-    //     toast.error(res.data.error);
-    //   }
-    //
-    //   if (!res.data.error) {
-    //     toast.success("Task created successfully.");
-    //     // allTasks();
-    //     closeModal();
-    //   }
-    // } catch (error) {
-    //   toast.error("Something went wrong.");
-    //   console.log(error);
-    // }
+    setIsLoading(true);
+    const requestData = {
+      animeName: name,
+      animeRating: parseInt(rating),
+      comment: comment,
+    }
+
+    console.log(requestData);
+    post(`${BASE_URL}/api/anime_record/addRecord`, requestData)
+      .then(data => {
+        setIsLoading(false);
+        console.log(data);
+        toast.success("Successfully create new Anime!")
+        setTimeout(() => {
+          closeModal()
+          reloadAnimes()
+        }, 500)
+      })
+      .catch(err => {
+        console.log(err);
+        toast.error("Fail to create new Anime...")
+        setIsLoading(false);
+      })
   };
 
   return (
@@ -96,7 +100,7 @@ function CreateAnime() {
       <div className="submit-btn flex justify-end">
         <Button
           type="submit"
-          name="Create"
+          name={isLoading ? "Wait..." : "Create"}
           icon={add}
           padding={"0.8rem 2rem"}
           borderRad={"0.8rem"}

@@ -5,6 +5,7 @@ import {useUser} from "@clerk/nextjs";
 import useFetch from "@/app/hooks/useFetch";
 import {BASE_URL} from "@/app/context/network";
 import toast from "react-hot-toast";
+import {usePathname} from "next/navigation";
 
 export const GlobalContext = createContext();
 export const GlobalUpdateContext = createContext();
@@ -12,6 +13,7 @@ export const GlobalUpdateContext = createContext();
 export const GlobalProvider = ({children}) => {
   const {user} = useUser();
   const fetch = useFetch();
+  const pathname = usePathname()
 
   const [selectedTheme, setSelectedTheme] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -66,8 +68,32 @@ export const GlobalProvider = ({children}) => {
       })
       .catch(err => {
         console.log(err);
+        toast.error("Error fetching animes")
         setIsLoading(false)
       })
+  }
+
+  const reloadAnimes = () => {
+    clearAnimes();
+    switch (pathname) {
+      case "/":
+        allAnimes();
+        break;
+      case "/bad":
+        ratedAnimes(1);
+        break;
+      case "/passable":
+        ratedAnimes(2);
+        break;
+      case "/surprise":
+        ratedAnimes(3);
+        break;
+      case "/masterpiece":
+        ratedAnimes(4);
+        break;
+      default:
+        break;
+    }
   }
 
   useEffect(() => {
@@ -110,7 +136,8 @@ export const GlobalProvider = ({children}) => {
         clearAnimes,
         allAnimes,
         ratedAnimes,
-        searchAnimes
+        searchAnimes,
+        reloadAnimes
       }}>
         {children}
       </GlobalUpdateContext.Provider>
