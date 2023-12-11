@@ -8,7 +8,7 @@ import EditAnime from "@/app/components/Modals/editAnime";
 import {useState} from "react";
 import formatDate from "@/app/utils/formatDate";
 
-function Animes({title, animes}) {
+function Animes({title, animes, searchable}) {
   const {theme, isLoading, createModal, editModal} = useGlobalContext();
   const {searchAnimes} = useGlobalUpdateContext();
   const {openCreateModal} = useGlobalUpdateContext();
@@ -35,16 +35,18 @@ function Animes({title, animes}) {
       {editModal && <Modal content={<EditAnime initialData={...editModalInitialData}/>}/>}
       <div className="animes-header">
         <h1>{title}</h1>
-        <div className="input-control">
-          <label htmlFor="search" onClick={handleSearch}>{search}</label>
-          <input
-            type="text"
-            placeholder="想搜什么？"
-            value={searchText}
-            id="search"
-            name="search"
-            onChange={handleChange("search")}/>
-        </div>
+        {searchable &&
+          <div className="input-control">
+            <label htmlFor="search" onClick={handleSearch}>{search}</label>
+            <input
+              type="text"
+              placeholder="想搜什么？"
+              value={searchText}
+              id="search"
+              name="search"
+              onChange={handleChange("search")}/>
+          </div>
+        }
       </div>
       <button className="btn-rounded" onClick={openCreateModal}>{plus}</button>
 
@@ -98,7 +100,7 @@ const AnimeStyled = styled.main`
         .input-control {
             width: 30rem;
             position: relative;
-            margin: 0.8rem 1.6rem;
+            margin: 0 1.6rem;
             font-weight: 500;
 
             @media screen and (max-width: 450px) {

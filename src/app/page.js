@@ -14,6 +14,6 @@ export default function Home() {
   }, []);
 
   return (
-    <Animes title="All Animes" animes={animes}></Animes>
+    <Animes title="All Animes" animes={animes} searchable={true}></Animes>
   )
 }

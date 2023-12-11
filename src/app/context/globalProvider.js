@@ -4,6 +4,7 @@ import themes from "@/app/context/themes";
 import {useUser} from "@clerk/nextjs";
 import useFetch from "@/app/hooks/useFetch";
 import {BASE_URL} from "@/app/context/network";
+import toast from "react-hot-toast";
 
 export const GlobalContext = createContext();
 export const GlobalUpdateContext = createContext();
@@ -22,12 +23,10 @@ export const GlobalProvider = ({children}) => {
   const theme = themes[selectedTheme];
 
   const clearAnimes = () => {
-    console.log('clearAnimes called')
     setAnimes([]);
   }
 
   const allAnimes = () => {
-    console.log('allAnimes called');
     setIsLoading(true)
     fetch(`${BASE_URL}/api/anime_record`)
       .then(data => {
@@ -37,9 +36,25 @@ export const GlobalProvider = ({children}) => {
       })
       .catch(err => {
         console.log(err);
+        toast.error("Error fetching animes")
         setIsLoading(false)
       })
   };
+
+  const ratedAnimes = (rating) => {
+    setIsLoading(true)
+    fetch(`${BASE_URL}/api/anime_record/rating/${rating}`)
+      .then(data => {
+        data = data.data;
+        setAnimes(data)
+        setIsLoading(false)
+      })
+      .catch(err => {
+        console.log(err);
+        toast.error("Error fetching animes")
+        setIsLoading(false)
+      })
+  }
 
   const searchAnimes = (searchText) => {
     setIsLoading(true)
@@ -94,6 +109,7 @@ export const GlobalProvider = ({children}) => {
         closeModal,
         clearAnimes,
         allAnimes,
+        ratedAnimes,
         searchAnimes
       }}>
         {children}

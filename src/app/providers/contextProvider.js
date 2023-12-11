@@ -2,6 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import {GlobalProvider} from "@/app/context/globalProvider";
 import {ClerkLoaded, ClerkLoading} from "@clerk/nextjs";
+import {Toaster} from "react-hot-toast";
 
 function ContextProvider({children}) {
   // const [isReady, setIsReady] = useState(false)
@@ -20,6 +21,7 @@ function ContextProvider({children}) {
   // }
   return (
     <GlobalProvider>
+      <Toaster />
       <ClerkLoading>
         <div className="w-full h-full flex items-center justify-center">
           <span className="loader"></span>
