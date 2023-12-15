@@ -59,6 +59,7 @@ function Animes({title, animes, searchable}) {
         {animes.map((anime) => (
           <AnimeItem
             key={anime.id}
+            animeId={anime.id}
             name={anime.name}
             nameJp={anime.name_jp}
             cover={anime.cover}
@@ -66,6 +67,7 @@ function Animes({title, animes, searchable}) {
             date={formatDate(anime.record_at)}
             rating={anime.rating}
             watchCount={anime.watch_count}
+            comment={anime.comment}
             setEditModalInitialData={setEditModalInitialData}/>
         ))}
         {/*<button className="create-anime">*/}

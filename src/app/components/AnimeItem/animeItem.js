@@ -25,7 +25,7 @@ const toBase64 = (str) =>
     ? Buffer.from(str).toString('base64')
     : window.btoa(str)
 
-function AnimeItem({ name, nameJp, cover, id, date, rating, watchCount, setEditModalInitialData }) {
+function AnimeItem({ animeId, name, nameJp, cover, id, date, rating, watchCount, comment, setEditModalInitialData }) {
   const { theme } = useGlobalContext()
   const { openEditModal } = useGlobalUpdateContext()
 
@@ -55,12 +55,14 @@ function AnimeItem({ name, nameJp, cover, id, date, rating, watchCount, setEditM
         )}
         <button className="edit" onClick={() => {
           setEditModalInitialData({
+            animeId: animeId,
             name: name,
             nameJp: nameJp,
             date: date,
             rating: rating,
             watchCount: watchCount,
-            bangumiId: id
+            bangumiId: id,
+            comment: comment
           })
           openEditModal()
         }}>{edit}</button>

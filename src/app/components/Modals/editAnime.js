@@ -6,15 +6,22 @@ import Button from "@/app/components/Button/button";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 import {add} from "@/app/utils/icons";
+import RatingRow from "@/app/components/RatingRow/ratingRow";
+import usePost from "@/app/hooks/usePost";
+import {BASE_URL} from "@/app/context/network";
 
 function EditAnime({initialData}) {
   const [name, setName] = useState(initialData.name);
   const [bangumiId, setBangumiId] = useState(initialData.bangumiId);
   const [rating, setRating] = useState(initialData.rating);
+  const [comment, setComment] = useState(initialData.comment);
+  const [isLoading, setIsLoading] = useState(false);
 
   // const { theme, allTasks, closeModal } = useGlobalContext();
   const { theme } = useGlobalContext();
-  const { closeModal } = useGlobalUpdateContext();
+  const { closeModal, reloadAnimes } = useGlobalUpdateContext();
+
+  const post = usePost();
 
   const handleChange = (name) => (e) => {
     switch (name) {
@@ -38,31 +45,29 @@ function EditAnime({initialData}) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    toast.success("Uploading")
-    // const task = {
-    //   title: nameJp,
-    //   description: rating,
-    //   date,
-    //   completed,
-    //   important,
-    // };
-    //
-    // try {
-    //   const res = await axios.post("/api/tasks", task);
-    //
-    //   if (res.data.error) {
-    //     toast.error(res.data.error);
-    //   }
-    //
-    //   if (!res.data.error) {
-    //     toast.success("Task created successfully.");
-    //     // allTasks();
-    //     closeModal();
-    //   }
-    // } catch (error) {
-    //   toast.error("Something went wrong.");
-    //   console.log(error);
-    // }
+    setIsLoading(true);
+    const requestData = {
+      animeId: initialData.animeId,
+      // convert props.bangumiId to int if it is string, otherwise stay the same
+      bangumiId: typeof bangumiId === 'string' ? parseInt(bangumiId) : bangumiId,
+      animeRating: parseInt(rating),
+      comment: comment
+    }
+
+    post(`${BASE_URL}/api/anime_record/updateRecord`, requestData)
+      .then(data => {
+        setIsLoading(false);
+        toast.success("Successfully update anime")
+        setTimeout(() => {
+          closeModal()
+          reloadAnimes()
+        }, 500)
+      })
+      .catch(err => {
+        console.log(err)
+        toast.error("Fail to update anime")
+        setIsLoading(false);
+      })
   };
 
   return (
@@ -78,26 +83,31 @@ function EditAnime({initialData}) {
           onChange={handleChange("bangumiId")}
         />
       </div>
-      {/*<div className="input-control">*/}
-      {/*  <label htmlFor="comment">随便写点什么</label>*/}
-      {/*  <textarea*/}
-      {/*    value={comment}*/}
-      {/*    onChange={handleChange("comment")}*/}
-      {/*    name="comment"*/}
-      {/*    id="comment"*/}
-      {/*    rows={4}*/}
-      {/*    placeholder="随便写点什么"*/}
-      {/*  ></textarea>*/}
-      {/*</div>*/}
+      <div className="input-control">
+        <label htmlFor="name">动画名称</label>
+        <input
+          type="text"
+          id="name"
+          value={name}
+          name="name"
+          onChange={handleChange("name")}
+          placeholder="动画名称"
+        />
+      </div>
+      <div className="input-control">
+        <label htmlFor="comment">随便写点什么</label>
+        <textarea
+          value={comment}
+          onChange={handleChange("comment")}
+          name="comment"
+          id="comment"
+          rows={4}
+          placeholder="随便写点什么"
+        ></textarea>
+      </div>
       <div className="input-control">
         <label htmlFor="rating">评价</label>
-        <input
-          value={rating}
-          onChange={handleChange("rating")}
-          type="text"
-          name="rating"
-          id="rating"
-        />
+        <RatingRow editable={true} rating={rating} setRating={setRating} isConfirmed={true}/>
       </div>
 
       <div className="submit-btn flex justify-end">
@@ -117,19 +127,19 @@ function EditAnime({initialData}) {
 }
 
 const EditAnimeStyled = styled.form`
-  > h1 {
-    font-size: clamp(1.2rem, 5vw, 1.6rem);
-    font-weight: 600;
-  }
+    > h1 {
+        font-size: clamp(1.2rem, 5vw, 1.6rem);
+        font-weight: 600;
+    }
 
-  color: ${(props) => props.theme.colorGrey1};
+    color: ${(props) => props.theme.colorGrey1};
 
-  .input-control {
-    position: relative;
-    margin: 1.6rem 0;
-    font-weight: 500;
+    .input-control {
+        position: relative;
+        margin: 1.6rem 0;
+        font-weight: 500;
 
-    @media screen and (max-width: 450px) {
+        @media screen and (max-width: 450px) {
       margin: 1rem 0;
     }
 

@@ -49,11 +49,9 @@ function CreateAnime() {
       comment: comment,
     }
 
-    console.log(requestData);
     post(`${BASE_URL}/api/anime_record/addRecord`, requestData)
       .then(data => {
         setIsLoading(false);
-        console.log(data);
         toast.success("Successfully create new Anime!")
         setTimeout(() => {
           closeModal()

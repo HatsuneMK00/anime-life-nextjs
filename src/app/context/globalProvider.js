@@ -34,6 +34,7 @@ export const GlobalProvider = ({children}) => {
     fetch(`${BASE_URL}/api/anime_record`)
       .then(data => {
         data = data.data;
+        console.log(data)
         setAnimes(data)
         setIsLoading(false)
       })

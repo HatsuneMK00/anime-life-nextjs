@@ -4,9 +4,9 @@ import {emptyStar, eraser, star} from "@/app/utils/icons";
 import styled from "styled-components";
 import {useGlobalContext} from "@/app/context/globalProvider";
 
-function RatingRow({editable, rating, setRating}) {
+function RatingRow({editable, rating, setRating, isConfirmed}) {
   const {theme} = useGlobalContext()
-  const [confirmed, setConfirmed] = useState(false)
+  const [confirmed, setConfirmed] = useState(isConfirmed)
   const maxRating = 4
   const ratingDiv = []
   for (let i = 0; i < maxRating; i++) {
