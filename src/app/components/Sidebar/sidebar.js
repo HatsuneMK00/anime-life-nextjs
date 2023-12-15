@@ -11,7 +11,7 @@ import {logout} from "@/app/utils/icons";
 import Button from "@/app/components/Button/button";
 
 function Sidebar() {
-  const {theme} = useGlobalContext();
+  const {theme, summary} = useGlobalContext();
   const {clearAnimes} = useGlobalUpdateContext();
 
   const router = useRouter();
@@ -61,6 +61,7 @@ function Sidebar() {
             >
               {item.icon}
               <Link href={link}>{item.title}</Link>
+              <div className="badge">{summary[item.bias]}</div>
             </li>
           );
         })}
@@ -231,6 +232,12 @@ const SidebarStyled = styled.nav`
             }
         }
     }
+    
+    .nav-items {
+        li {
+            height: 45px;
+        }
+    }
 
     .nav-item {
         position: relative;
@@ -238,7 +245,7 @@ const SidebarStyled = styled.nav`
         margin: 0.3rem 0;
 
         display: grid;
-        grid-template-columns: 40px 1fr;
+        grid-template-columns: 40px 1fr 40px;
         cursor: pointer;
         align-items: center;
 
@@ -285,6 +292,14 @@ const SidebarStyled = styled.nav`
             &::after {
                 width: 100%;
             }
+        }
+        
+        .badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: ${(props) => props.theme.colorGrey4};
+            border-radius: 20px;
         }
     }
 

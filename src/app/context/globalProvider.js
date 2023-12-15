@@ -21,6 +21,7 @@ export const GlobalProvider = ({children}) => {
   const [editModal, setEditModal] = useState(false);
 
   const [animes, setAnimes] = useState([]);
+  const [summary, setSummary] = useState({});
 
   const theme = themes[selectedTheme];
 
@@ -94,11 +95,32 @@ export const GlobalProvider = ({children}) => {
       default:
         break;
     }
+    refreshSummary();
+  }
+
+  const refreshSummary = () => {
+    fetch(`${BASE_URL}/api/anime_record/summary`)
+      .then(data => {
+        data = data.data;
+        const s = {
+          all: data.total_count,
+          bad: data.rating_one_count,
+          passable: data.rating_two_count,
+          surprise: data.rating_three_count,
+          masterpiece: data.rating_four_count,
+        }
+        setSummary(s)
+      })
+      .catch(err => {
+        console.log(err);
+        toast.error("Error fetching summary")
+      })
   }
 
   useEffect(() => {
     if (user) {
       allAnimes();
+      refreshSummary();
     }
   }, [user]);
 
@@ -123,9 +145,10 @@ export const GlobalProvider = ({children}) => {
     <GlobalContext.Provider value={{
       theme,
       animes,
+      summary,
       createModal,
       editModal,
-      isLoading
+      isLoading,
     }}>
       <GlobalUpdateContext.Provider value={{
         openCreateModal,
@@ -137,7 +160,8 @@ export const GlobalProvider = ({children}) => {
         allAnimes,
         ratedAnimes,
         searchAnimes,
-        reloadAnimes
+        reloadAnimes,
+        refreshSummary,
       }}>
         {children}
       </GlobalUpdateContext.Provider>
