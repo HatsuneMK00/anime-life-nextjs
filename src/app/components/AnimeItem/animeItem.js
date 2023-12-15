@@ -5,6 +5,9 @@ import styled from "styled-components";
 import {edit, emptyStar, star, trash} from "@/app/utils/icons";
 import RatingRow from "@/app/components/RatingRow/ratingRow";
 import Image from "next/image";
+import usePost from "@/app/hooks/usePost";
+import {BASE_URL} from "@/app/context/network";
+import toast from "react-hot-toast";
 
 const shimmer = (w, h) => `
 <svg width="${w}" height="${h}" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -27,7 +30,31 @@ const toBase64 = (str) =>
 
 function AnimeItem({ animeId, name, nameJp, cover, id, date, rating, watchCount, comment, setEditModalInitialData }) {
   const { theme } = useGlobalContext()
-  const { openEditModal } = useGlobalUpdateContext()
+  const { openEditModal, reloadAnimes } = useGlobalUpdateContext()
+
+  const post = usePost();
+
+  const handleDelete = (animeId) => {
+    const requestData = {
+      animeId: animeId,
+    }
+    const toastId = toast.loading("Deleting")
+    post(`${BASE_URL}/api/anime_record/deleteRecord`, requestData)
+      .then(data => {
+        toast.success("Successfully delete anime", {
+          id: toastId
+        })
+        setTimeout(() => {
+          reloadAnimes()
+        }, 500)
+      })
+      .catch(err => {
+        console.log(err)
+        toast.error("Fail to delete anime", {
+          id: toastId
+        })
+      })
+  }
 
   return (
     <AnimeItemStyled theme={theme}>
@@ -69,7 +96,7 @@ function AnimeItem({ animeId, name, nameJp, cover, id, date, rating, watchCount,
         <button
           className="delete"
           onClick={() => {
-            // deleteTask(id);
+            handleDelete(animeId);
           }}
         >
           {trash}

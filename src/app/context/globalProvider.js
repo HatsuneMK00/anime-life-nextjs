@@ -40,7 +40,9 @@ export const GlobalProvider = ({children}) => {
       })
       .catch(err => {
         console.log(err);
-        toast.error("Error fetching animes")
+        toast.error("Error fetching animes", {
+          id: "fail_fetch_animes"
+        })
         setIsLoading(false)
       })
   };
@@ -55,7 +57,9 @@ export const GlobalProvider = ({children}) => {
       })
       .catch(err => {
         console.log(err);
-        toast.error("Error fetching animes")
+        toast.error("Error fetching animes", {
+          id: "fail_fetch_animes"
+        })
         setIsLoading(false)
       })
   }
@@ -70,7 +74,9 @@ export const GlobalProvider = ({children}) => {
       })
       .catch(err => {
         console.log(err);
-        toast.error("Error fetching animes")
+        toast.error("Error fetching animes", {
+          id: "fail_fetch_animes"
+        })
         setIsLoading(false)
       })
   }
@@ -114,7 +120,9 @@ export const GlobalProvider = ({children}) => {
       })
       .catch(err => {
         console.log(err);
-        toast.error("Error fetching summary")
+        toast.error("Error fetching summary", {
+          id: "fail_fetch_summary"
+        })
       })
   }
 
