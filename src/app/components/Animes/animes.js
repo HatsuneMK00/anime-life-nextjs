@@ -36,16 +36,19 @@ function Animes({title, animes, searchable}) {
       <div className="animes-header">
         <h1>{title}</h1>
         {searchable &&
-          <div className="input-control">
-            <label htmlFor="search" onClick={handleSearch}>{search}</label>
-            <input
-              type="text"
-              placeholder="想搜什么？"
-              value={searchText}
-              id="search"
-              name="search"
-              onChange={handleChange("search")}/>
-          </div>
+          <form onSubmit={(e) => {e.preventDefault(); handleSearch()}}>
+            <div className="input-control">
+              <label htmlFor="search" onClick={handleSearch}>{search}</label>
+              <input
+                type="text"
+                placeholder="想搜什么？"
+                value={searchText}
+                id="search"
+                name="search"
+                onChange={handleChange("search")}/>
+              <input type="submit" style={{display: "none"}} />
+            </div>
+          </form>
         }
       </div>
       <button className="btn-rounded" onClick={openCreateModal}>{plus}</button>
