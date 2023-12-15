@@ -10,12 +10,15 @@ import RatingRow from "@/app/components/RatingRow/ratingRow";
 import useFetch from "@/app/hooks/useFetch";
 import {BASE_URL} from "@/app/context/network";
 import usePost from "@/app/hooks/usePost";
+import {mock_live_search} from "@/mock/live_search";
+import LiveSearch from "@/app/components/LiveSearch/liveSearch";
 
 function CreateAnime() {
   const [name, setName] = useState("");
   const [rating, setRating] = useState("");
   const [comment, setComment] = useState("")
   const [isLoading, setIsLoading] = useState(false);
+  const [showLiveSearch, setShowLiveSearch] = useState(false);
 
   // const { theme, allTasks, closeModal } = useGlobalContext();
   const { theme } = useGlobalContext();
@@ -26,6 +29,11 @@ function CreateAnime() {
   const handleChange = (name) => (e) => {
     switch (name) {
       case "name":
+        if (e.target.value.trim() === '') {
+          setShowLiveSearch(false)
+        } else {
+          setShowLiveSearch(true)
+        }
         setName(e.target.value);
         break;
       case "rating":
@@ -65,8 +73,13 @@ function CreateAnime() {
       })
   };
 
+  const handleLiveSearchSelect = (name) => {
+    setName(name)
+    setShowLiveSearch(false)
+  }
+
   return (
-    <CreateAnimeStyled onSubmit={handleSubmit} theme={theme}>
+    <CreateAnimeStyled onSubmit={handleSubmit} theme={theme} onClick={() => {setShowLiveSearch(false)}}>
       <h1>新增动画</h1>
       <div className="input-control">
         <label htmlFor="name">动画名称</label>
@@ -78,6 +91,9 @@ function CreateAnime() {
           onChange={handleChange("name")}
           placeholder="动画名称"
         />
+        { showLiveSearch &&
+          <LiveSearch handleLiveSearchSelect={handleLiveSearchSelect} query={name} />
+        }
       </div>
       <div className="input-control">
         <label htmlFor="comment">随便写点什么</label>
@@ -112,6 +128,8 @@ function CreateAnime() {
 }
 
 const CreateAnimeStyled = styled.form`
+  position: relative;
+    
   > h1 {
     font-size: clamp(1.2rem, 5vw, 1.6rem);
     font-weight: 600;
