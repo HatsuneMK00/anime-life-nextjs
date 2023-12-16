@@ -51,10 +51,10 @@ jobs:
           ls ${{ github.workspace }}/helm-charts/charts/anime-life-nextjs
       - name: Update image tag
         run: |
-          sed -i '' "s/tag:.*/tag: ${{ env.IMAGE_TAG }}/" ${{ github.workspace }}/helm-charts/charts/anime-life-nextjs/values.yaml
+          sed -i "s/tag:.*/tag: ${{ env.IMAGE_TAG }}/" ${{ github.workspace }}/helm-charts/charts/anime-life-nextjs/values.yaml
       - name: Update chart version
         run: |
-          sed -i '' "s/version:.*/version: ${{ env.IMAGE_TAG }}/" ${{ github.workspace }}/helm-charts/charts/anime-life-nextjs/Chart.yaml
+          sed -i "s/version:.*/version: ${{ env.IMAGE_TAG }}/" ${{ github.workspace }}/helm-charts/charts/anime-life-nextjs/Chart.yaml
       - name: Commit and push changes
         run: |
           cd ${{ github.workspace }}/helm-charts
