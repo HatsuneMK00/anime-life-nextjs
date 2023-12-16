@@ -5,9 +5,10 @@ on:
   push:
     branches:
       - main
-
+env:
+  IMAGE_TAG: ${{ github.sha }}
 jobs:
-  docker:
+  docker-build:
     runs-on: ubuntu-latest
     steps:
       -
@@ -31,4 +32,30 @@ jobs:
         with:
           context: .
           push: true
-          tags: kmakise556/anime-life-nextjs:${{ github.sha }}
+          tags: kmakise556/anime-life-nextjs:${{ env.IMAGE_TAG }}
+  deploy-helm:
+    runs-on: ubuntu-latest
+    needs: [docker-build]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout helm-charts repo
+        uses: actions/checkout@v4
+        with:
+          repository: HatsuneMK00/helm-charts
+          path: helm-charts
+      - name: Update image tag
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -i '.image.tag = ${{ env.IMAGE_TAG }}' ${{ github.workspace }}/helm-charts/charts/anime-life-nextjs/values.yaml
+      - name: Update chart version
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq -i '.version = ${{ env.IMAGE_TAG }}' ${{ github.workspace }}/helm-charts/charts/anime-life-nextjs/Chart.yaml
+      - name: Commit and push changes
+        run: |
+          cd ${{ github.workspace }}/helm-charts
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git add .
+          git commit -m "Update anime-life-nextjs to ${{ env.IMAGE_TAG }}"
+          git push
