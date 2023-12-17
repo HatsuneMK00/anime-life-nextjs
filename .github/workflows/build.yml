@@ -5,13 +5,36 @@ on:
   push:
     branches:
       - main
-env:
-  IMAGE_TAG: ${{ github.sha }}
 permissions:
   contents: write
 jobs:
-  docker-build:
+  prepare-version:
     runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.prepare_version.outputs.tag }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Read version
+        id: read_version
+        run: |
+          content=`cat package.json`
+          # the following lines are only required for multi line json
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          # end of optional handling for multi line json
+          echo "packageJson=$content" >> "$GITHUB_OUTPUT"
+      - name: Prepare version
+        id: prepare_version
+        run: |
+          tag=`echo "${{fromJson(steps.read_version.outputs.packageJson).version}}"`-${{ github.sha }}
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+  docker-build:
+    needs: [prepare-version]
+    runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG: ${{ needs.prepare-version.outputs.tag }}
     steps:
       -
         name: Checkout
@@ -37,8 +60,10 @@ jobs:
           tags: kmakise556/anime-life-nextjs:${{ env.IMAGE_TAG }}
   deploy-helm:
     runs-on: ubuntu-latest
-    needs: [docker-build]
+    needs: [prepare-version, docker-build]
     if: github.ref == 'refs/heads/main'
+    env:
+      IMAGE_TAG: ${{ needs.prepare-version.outputs.tag }}
     steps:
       - name: Checkout helm-charts repo
         uses: actions/checkout@v4
