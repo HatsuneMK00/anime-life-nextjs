@@ -15,20 +15,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Read version
-        id: read_version
+      - name: Read json
+        id: read_json
         run: |
-          content=`cat package.json`
-          # the following lines are only required for multi line json
-          content="${content//'%'/'%25'}"
-          content="${content//$'\n'/'%0A'}"
-          content="${content//$'\r'/'%0D'}"
-          # end of optional handling for multi line json
-          echo "packageJson=$content" >> "$GITHUB_OUTPUT"
+          echo "packageJson<<EOF" >> $GITHUB_OUTPUT
+          cat ./package.json >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
       - name: Prepare version
         id: prepare_version
         run: |
-          tag=`echo "${{fromJson(steps.read_version.outputs.packageJson).version}}"`-${{ github.sha }}
+          tag=`echo "${{fromJson(steps.read_json.outputs.packageJson).version}}"`-${{ github.sha }}
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
   docker-build:
     needs: [prepare-version]
