@@ -92,7 +92,7 @@ jobs:
           VERSION_SUFFIX=$(echo ${{ github.ref }} | cut -d '/' -f3)
           CHART_VERSION=$IMAGE_TAG-$VERSION_SUFFIX
           [[ "${{ github.ref }}" == "refs/tags/"* ]] && CHART_VERSION=$IMAGE_TAG
-          sed -i "s/version:.*/version: ${{ env.IMAGE_TAG }}/" ${{ github.workspace }}/helm-charts/charts/anime-life-nextjs/Chart.yaml
+          sed -i "s/version:.*/version: $CHART_VERSION/" ${{ github.workspace }}/helm-charts/charts/anime-life-nextjs/Chart.yaml
       - name: Commit and push changes to HatsuneMK00/helm-charts
         run: |
           cd ${{ github.workspace }}/helm-charts
