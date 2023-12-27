@@ -59,7 +59,7 @@ function Animes({title, animes, searchable}) {
         </div>
       }
       <div className="animes grid">
-        {animes.map((anime) => (
+        {animes !== undefined &&  animes.map((anime) => (
           <AnimeItem
             key={anime.id}
             animeId={anime.id}
