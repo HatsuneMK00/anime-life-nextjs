@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: "anime-life-nextjs"
+  name: "anime-life-nextjs"
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "anime-life-nextjs"
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: "anime-life-nextjs"
+    spec:
+      containers:
+        - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+          imagePullPolicy: IfNotPresent
+          name: "anime-life-nextjs"
+          env:
+            - name: "REACT_APP_ENVIRONMENT"
+              value: "PROD"
+            - name: NEXT_PUBLIC_CLERK_SIGN_IN_URL
+              value: "/sign-in"
+            - name: NEXT_PUBLIC_CLERK_SIGN_UP_URL
+              value: "/sign-up"
+            - name: NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL
+              value: "/"
+            - name: NEXT_PUBLIC_CLERK_AFTER_SIGN_OUT_URL
+              value: "/sign-in"
+            - name: NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL
+              value: "/"
+            - name: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: clerk-env
+                  key: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+            - name: CLERK_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: clerk-env
+                  key: CLERK_SECRET_KEY
+            - name: WEBHOOK_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: clerk-env
+                  key: WEBHOOK_SECRET
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 250m
+              memory: 500Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always

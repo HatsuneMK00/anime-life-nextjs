@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: anime-life-nextjs
+spec:
+  rules:
+  - host: "anime.makise-amadeus.xyz"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: anime-life-nextjs
+            port:
+              number: 3000
