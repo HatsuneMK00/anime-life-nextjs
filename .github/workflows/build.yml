@@ -146,7 +146,7 @@ jobs:
           kubeconfig: ${{ secrets.KUBE_CONFIG }}
       - name: Deploy to k3s
         run: |
-          helm upgrade --wait --timeout 5m --namespace default anime-life-backend .ci/charts/anime-life-backend
+          helm upgrade --wait --timeout 5m --namespace default anime-life-nextjs .ci/charts/anime-life-nextjs
       - name: Commit and push changes to HatsuneMK00/helm-charts
         run: |
           cp -r .ci/charts/anime-life-nextjs helm-charts/charts
