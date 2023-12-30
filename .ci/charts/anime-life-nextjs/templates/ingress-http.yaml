@@ -14,6 +14,6 @@ spec:
             path: "/"
             backend:
               service:
-                name: anime-life-backend
+                name: anime-life-nextjs
                 port:
-                  number: 8080
+                  number: 3000
